@@ -3,6 +3,10 @@ import { SpeechClient } from "@google-cloud/speech";
 const sttClient = new SpeechClient();
 process.env.GOOGLE_APPLICATION_CREDENTIALS = "./google-credentials.json";
 
+/**
+ * Transcreve um arquivo de áudio assíncronamente.
+ * @param {string} gcsUri O URI do arquivo de áudio no Google Cloud Storage.
+ */
 export async function speechToTextWithGoogle(gcsUri) {
   try {
     const request = {
