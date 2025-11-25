@@ -4,6 +4,11 @@ import fs from "node:fs";
 const ttsClient = new TextToSpeechClient();
 process.env.GOOGLE_APPLICATION_CREDENTIALS = "./google-credentials.json";
 
+/**
+ * Faz a síntese de fala usando o Google Text-to-Speech com suporte a SSML.
+ * @param {string} text O SSML a ser sintetizado.
+ * @param {string} outputFile O caminho do arquivo de saída para o áudio gerado.
+ */
 export async function textToSpeechWithGoogle(text, outputFile) {
   try {
     const options = {
