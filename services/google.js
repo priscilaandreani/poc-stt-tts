@@ -7,7 +7,7 @@ process.env.GOOGLE_APPLICATION_CREDENTIALS = "./google-credentials.json";
 export async function textToSpeechWithGoogle(text, outputFile) {
   try {
     const options = {
-      input: { text: text },
+      input: { ssml: text },
       voice: { languageCode: "pt-BR", ssmlGender: "FEMALE" },
       audioConfig: { audioEncoding: "MP3" },
     };
@@ -23,9 +23,12 @@ export async function textToSpeechWithGoogle(text, outputFile) {
   }
 }
 
+const ssmlInput =
+  '<speak>Olá. <break time="1s"/> Esta é uma fala com uma pausa dramática.</speak>';
+
 (async () => {
   await textToSpeechWithGoogle(
-    "Olá, este é um teste de síntese de fala com Google Cloud Text-to-Speech!",
-    "output/test_google_tts.mp3"
+    ssmlInput,
+    "output/test_google_tts-withSSML.mp3"
   );
 })();
