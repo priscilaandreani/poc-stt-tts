@@ -1,7 +1,7 @@
 import { TextToSpeechClient } from "@google-cloud/text-to-speech";
 import fs from "node:fs";
 
-const client = new TextToSpeechClient();
+const ttsClient = new TextToSpeechClient();
 process.env.GOOGLE_APPLICATION_CREDENTIALS = "./google-credentials.json";
 
 export async function textToSpeechWithGoogle(text, outputFile) {
@@ -12,7 +12,7 @@ export async function textToSpeechWithGoogle(text, outputFile) {
       audioConfig: { audioEncoding: "MP3" },
     };
 
-    const data = await client.synthesizeSpeech(options);
+    const data = await ttsClient.synthesizeSpeech(options);
 
     fs.writeFileSync(outputFile, data[0].audioContent, "binary");
 
