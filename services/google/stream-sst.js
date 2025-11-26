@@ -8,13 +8,16 @@ process.env.GOOGLE_APPLICATION_CREDENTIALS = "./google-credentials.json";
  * Transcreve um arquivo de áudio local usando streaming.
  * @param {string} localFilePath O caminho para o arquivo de áudio.
  */
-async function streamSpeechToText(localFilePath) {
+export async function streamSpeechToTextWithGoogle(localFilePath) {
   const initialRequest = {
     config: {
       encoding: "LINEAR16",
       sampleRateHertz: 16000,
       languageCode: "pt-BR",
+      model: "phone_call",
       interimResults: true, // Resultados provisórios
+      interimResults: true, // Resultados em tempo real
+      enableAutomaticPunctuation: true, // Pontuação automática
     },
   };
 
@@ -40,3 +43,18 @@ async function streamSpeechToText(localFilePath) {
 
   await new Promise((resolve) => recognizeStream.on("end", resolve));
 }
+
+// --- Exemplo de Uso ---
+(async () => {
+  const audioFile = "input/teste-01.wav";
+
+  if (!fs.existsSync(audioFile)) {
+    console.log(
+      `Arquivo de áudio não encontrado em: ${audioFile}. Por favor, verifique o caminho.`
+    );
+    return;
+  }
+
+  console.log("Iniciando Transcrição em Tempo Real (Simulada)...");
+  await streamSpeechToTextWithGoogle(audioFile);
+})();
