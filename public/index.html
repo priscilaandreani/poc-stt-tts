@@ -33,10 +33,10 @@
         background-color: #ccc;
       }
       .user-msg {
-        color: blue;
+        color: #007bff;
       }
       .bot-msg {
-        color: green;
+        color: purple;
         font-weight: bold;
       }
     </style>
@@ -45,7 +45,7 @@
     <h1>🎙️ Agente Vanilla (Web Speech API)</h1>
     <p>Clique para falar e aguarde a resposta.</p>
 
-    <button id="btnStart" onclick="startConversation()">🎤 Falar Agora</button>
+    <button id="btnStart" onclick="startConversation()">🎤</button>
 
     <div id="log"></div>
 
@@ -57,15 +57,13 @@
       const SpeechRecognition =
         window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRecognition) {
-        alert(
-          "Seu navegador não suporta Web Speech API. Use o Chrome ou Edge."
-        );
+        alert("Seu navegador não suporta Web Speech API.");
       }
 
       const recognition = new SpeechRecognition();
       recognition.lang = "pt-BR";
-      recognition.interimResults = false;
-      recognition.maxAlternatives = 1;
+      // recognition.interimResults = true;
+      recognition.maxAlternatives = 5; // Aceitar várias alternativas de reconhecimento
 
       // Text to Speech
       const synth = window.speechSynthesis;

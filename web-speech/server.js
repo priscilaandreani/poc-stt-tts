@@ -10,9 +10,6 @@ app.use(express.static("public"));
 
 // --- API Mockada - Simulando respostas do Bedrock ---
 app.post("/api/chat", (req, res) => {
-  console.log(req);
-  console.log(res);
-
   const userText = req.body.text ? req.body.text.toLowerCase() : "";
   console.log(`📩 Recebido: "${userText}"`);
 
