@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>POC Conversacional Vanilla</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        text-align: center;
+        margin-top: 50px;
+      }
+      #log {
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        min-height: 100px;
+        width: 60%;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: left;
+      }
+      button {
+        padding: 15px 30px;
+        font-size: 18px;
+        cursor: pointer;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+      }
+      button:disabled {
+        background-color: #ccc;
+      }
+      .user-msg {
+        color: blue;
+      }
+      .bot-msg {
+        color: green;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🎙️ Agente Vanilla (Web Speech API)</h1>
+    <p>Clique para falar e aguarde a resposta.</p>
+
+    <button id="btnStart" onclick="startConversation()">🎤 Falar Agora</button>
+
+    <div id="log"></div>
+
+    <script>
+      const logDiv = document.getElementById("log");
+      const btnStart = document.getElementById("btnStart");
+
+      // Speech to Text
+      const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert(
+          "Seu navegador não suporta Web Speech API. Use o Chrome ou Edge."
+        );
+      }
+
+      const recognition = new SpeechRecognition();
+      recognition.lang = "pt-BR";
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      // Text to Speech
+      const synth = window.speechSynthesis;
+
+      function log(message, type = "") {
+        const p = document.createElement("p");
+        p.className = type;
+        p.innerText = message;
+        logDiv.appendChild(p);
+        logDiv.scrollTop = logDiv.scrollHeight; // Auto-scroll
+      }
+
+      function startConversation() {
+        btnStart.disabled = true;
+        btnStart.innerText = "Ouvindo...";
+        try {
+          recognition.start();
+        } catch (e) {
+          console.error("Erro ao iniciar:", e);
+          resetButton();
+        }
+      }
+
+      // --- STT ---
+      recognition.onresult = async (event) => {
+        const transcript = event.results[0][0].transcript;
+        log(`Você: ${transcript}`, "user-msg");
+        btnStart.innerText = "Processando...";
+
+        await sendToMockAPI(transcript);
+      };
+
+      recognition.onspeechend = () => {
+        recognition.stop();
+      };
+
+      recognition.onerror = (event) => {
+        log(`Erro de reconhecimento: ${event.error}`);
+        resetButton();
+      };
+
+      async function sendToMockAPI(text) {
+        try {
+          const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text }),
+          });
+
+          const data = await response.json();
+
+          log(`Agente: ${data.reply}`, "bot-msg");
+
+          speakResponse(data.reply);
+        } catch (error) {
+          log("Erro na API: " + error);
+          resetButton();
+        }
+      }
+
+      // --- TTS ---
+      function speakResponse(text) {
+        if (synth.speaking) {
+          console.error("Já está falando...");
+          return;
+        }
+
+        const utterThis = new SpeechSynthesisUtterance(text);
+        utterThis.lang = "pt-BR";
+
+        const voices = synth.getVoices();
+
+        const googleVoice = voices.find(
+          (v) => v.name.includes("Google") && v.lang.includes("pt-BR")
+        );
+        if (googleVoice) utterThis.voice = googleVoice;
+
+        utterThis.onend = function (event) {
+          resetButton();
+        };
+
+        utterThis.onerror = function (event) {
+          resetButton();
+        };
+
+        synth.speak(utterThis);
+      }
+
+      function resetButton() {
+        btnStart.disabled = false;
+        btnStart.innerText = "🎤 Falar Novamente";
+      }
+    </script>
+  </body>
+</html>
