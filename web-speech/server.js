@@ -16,7 +16,8 @@ app.post("/api/chat", (req, res) => {
   let botResponse = "Desculpe, não entendi. Pode repetir?";
 
   if (userText.includes("olá") || userText.includes("oi")) {
-    botResponse = "Olá! Eu sou seu assistente virtual. Como posso ajudar?";
+    botResponse =
+      "Olá! Eu sou seu assistente virtual do Boticário. Como posso ajudar?";
   } else if (userText.includes("perfume") || userText.includes("boticário")) {
     botResponse =
       "O produto mais vendido do Boticário é o Malbec. Gostaria de saber mais?";
