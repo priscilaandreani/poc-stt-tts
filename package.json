@@ -10,10 +10,12 @@
   "license": "ISC",
   "description": "POC para STT e TTS",
   "dependencies": {
+    "@aws-sdk/client-polly": "3.940.0",
     "@google-cloud/speech": "7.2.1",
     "@google-cloud/storage": "7.17.3",
     "@google-cloud/text-to-speech": "6.4.0",
     "cors": "2.8.5",
+    "dotenv": "17.2.3",
     "express": "5.1.0"
   }
 }
